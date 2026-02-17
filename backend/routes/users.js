@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { users } from "../data/database.js";
+import { notes } from "../data/database.js";
 
 
 
@@ -25,6 +26,25 @@ router.get('/:id', (req, res) => {
 
 });
 
+router.post('/', (req, res) => {
+    if (!req.body.name || req.body.name.trim() === "") {
+        return res.status(400).json ({
+            message: "Name is required"
+        });
+    }  
+
+    const newUser = req.body;
+    
+    newUser.id = nextId;
+
+    nextId = nextId + 1;
+
+    users.push(newUser);
+    
+    res.status(201).json(newUser);
+
+});
+
 router.put('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const user = users.find( u => u.id === id);
@@ -43,14 +63,31 @@ router.put('/:id', (req, res) => {
 });
 
 
-router.post('/', (req, res) => {
-    const newUser = req.body;
-    newUser.id = nextId;
-    nextId = nextId + 1;
-    users.push(newUser);
-    res.status(201).json(newUser);
+router.delete('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const user = users.find( u => u.id === id);
+
+    if(!user) {
+        return res.status(404).json({
+            message : "Cant delete user"
+        });
+    }
+
+    const index = users.findIndex(u => u.id === id);
+    users.splice(index , 1);
+
+    res.json({
+        message: "user is deleted succesfully"
+    })
 
 });
+
+router.get('/:id/notes', (req, res) => {
+    const userId = parseInt(req.params.id);
+    const userNote = notes.filter(n => n.userId === userId);
+    res.json(userNote);
+});
+
 
 
 export default router;
