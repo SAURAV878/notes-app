@@ -1,20 +1,21 @@
 import { Router } from "express";
 
-import { users } from "../data/database.js";
-import { notes } from "../data/database.js";
+
+import db from "../data/database.js";
 
 
 
 const router = Router();
-let nextId = 1;
+
 
 router.get('/', (req, res) => {
+    const users =  db.prepare('SELECT * FROM users').all();
     res.json(users);
-})
+});
 
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const user = users.find( u => u.id === id);
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
 
     if (!user) {
         return res.status(404).json({
@@ -27,19 +28,17 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    if (!req.body.name || req.body.name.trim() === "") {
+    const {name, age} = req.body;
+
+    if (!name || name.trim() === "") {
         return res.status(400).json ({
             message: "Name is required"
         });
     }  
 
-    const newUser = req.body;
+    const result  = db.prepare('INSERT INTO users (name, age) VALUES (?,?)').run(name, age || null);
     
-    newUser.id = nextId;
-
-    nextId = nextId + 1;
-
-    users.push(newUser);
+    const newUser = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
     
     res.status(201).json(newUser);
 
@@ -47,46 +46,52 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const user = users.find( u => u.id === id);
+    const {name, age} = req.body;
 
-    if (!user) {
+    const existingUser = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
 
+    if (!existingUser) {
         return res.status(404).json ({
-            message: "User not updated"
+            message: "User not found"
         });
     }
-        user.name = req.body.name ?? user.name;
-        user.age = req.body.age ?? user.age;
 
-    res.json(user);
+    const updateName = name ?? existingUser.name;
+    const updateAge = age ?? existingUser.age;
+
+    db.prepare('UPDATE users SET name = ?, age = ? WHERE id = ?').run(updateName, updateAge, id);
+
+    const updateUser =db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+
+
+    res.json(updateUser);
 
 });
 
 
 router.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const user = users.find( u => u.id === id);
 
-    if(!user) {
+    const existingUser = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+
+    if(!existingUser) {
         return res.status(404).json({
             message : "Cant delete user"
         });
     }
 
-    const index = users.findIndex(u => u.id === id);
-    users.splice(index , 1);
-
+   db.prepare('DELETE FROM users WHERE id = ?').run(id);
     res.json({
         message: "user is deleted succesfully"
-    })
+    });
 
 });
 
-router.get('/:id/notes', (req, res) => {
-    const userId = parseInt(req.params.id);
-    const userNote = notes.filter(n => n.userId === userId);
-    res.json(userNote);
-});
+// router.get('/:id/notes', (req, res) => {
+//     const userId = parseInt(req.params.id);
+//     const userNote = notes.filter(n => n.userId === userId);
+//     res.json(userNote);
+// });
 
 
 
