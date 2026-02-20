@@ -10,4 +10,14 @@ db.exec(`
     )
 `);
 
+db.exec(`
+    CREATE TABLE IF NOT EXISTS notes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT,
+    FOREIGN KEY (userID) REFERENCES users(id)
+    )
+`)
+
 export default db;

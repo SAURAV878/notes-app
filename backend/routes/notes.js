@@ -1,14 +1,15 @@
-// import { Router } from "express";
-//  import { notes } from "../data/database.js";
-//  import { users } from "../data/database.js";
+import { Router } from "express";
 
-//  const router = Router();
+import db from "../data/database.js";
 
-//  let nextId = 1
+ const router = Router();
 
-//  router.get('/', (req, res) => {
-//     res.json(notes);
-//  });
+
+
+ router.get('/', (req, res) => {
+    const notes = db.prepare('SELECT * FROM notes').all();
+    res.json(notes);
+ });
 
 //  router.get('/:id', (req, res) => {
 //     const id = parseInt(req.params.id);
@@ -84,4 +85,4 @@
 // })
 
 
-//  export default router;
+ export default router;
