@@ -90,7 +90,6 @@ router.delete('/:id', (req, res) => {
 router.get('/:id/notes', (req, res) => {
     const userId = parseInt(req.params.id);
 
-    
     const user= db.prepare ('SELECT * FROM users WHERE id = ?').get(userId);
     if(!user) {
         return res.status(404).json ({
@@ -98,7 +97,7 @@ router.get('/:id/notes', (req, res) => {
         });
     }
 
-    const notes = db.prepare('SELECT * FORM notes WHERE userId = ?').all(userId);
+    const notes = db.prepare('SELECT * FROM notes WHERE userId = ?').all(userId);
 
     res.json(notes);
 });
