@@ -5,11 +5,14 @@ import logger from './middleware/logger.js';
 
 const app = express();
 app.use(express.json());
+app.use(logger);
+
+app.use(express.static('../frontend'));
 
 
 app.use('/users', usersRouter);
 app.use('/notes', notesRouter);
-app.use(logger);
+
 
 app.listen(8000 , () => {
     

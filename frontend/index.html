@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+</head>
+<body>
+    <div class="container">
+        <h1>My Notes App</h1>
+
+        <section>
+            <h2>Users</h2>
+            <form id="userForm">
+                <input type="number" id="userName" placeholder="Enter name" required>
+                <input type="number" id="userAge" placeholder="Enter age">
+                <button type="submit">Add User</button>              
+            </form>
+            <div id="userlist">
+                <p>Users will appear here...</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Notes</h2>
+            <form id="noteForm">
+                <select id="noteUserId" required>
+                    <option value="">Select a user</option>
+                </select>
+                <input type="text" id="noteTitle" placeholder="Note Title" required>
+                <textarea id="noteCoontent" placeholder="Note content"></textarea>
+                <button type="submit">Add NOte</button>
+            </form>
+            <div id="noteslist">
+                <p>Notes will appear here...</p>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>
