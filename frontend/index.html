@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Notes App</title>
 </head>
 <body>
@@ -12,7 +13,7 @@
         <section>
             <h2>Users</h2>
             <form id="userForm">
-                <input type="number" id="userName" placeholder="Enter name" required>
+                <input type="text" id="userName" placeholder="Enter name" required>
                 <input type="number" id="userAge" placeholder="Enter age">
                 <button type="submit">Add User</button>              
             </form>
@@ -28,8 +29,8 @@
                     <option value="">Select a user</option>
                 </select>
                 <input type="text" id="noteTitle" placeholder="Note Title" required>
-                <textarea id="noteCoontent" placeholder="Note content"></textarea>
-                <button type="submit">Add NOte</button>
+                <textarea id="noteContent" placeholder="Note content"></textarea>
+                <button type="submit">Add Note</button>
             </form>
             <div id="noteslist">
                 <p>Notes will appear here...</p>
