@@ -16,7 +16,7 @@ db.exec(`
     userId INTEGER NOT NULL,
     title TEXT NOT NULL,
     content TEXT,
-    FOREIGN KEY (userID) REFERENCES users(id)
+    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )
 `)
 
