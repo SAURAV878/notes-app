@@ -87,12 +87,24 @@ async function loadNotes () {
             <div class = "note-item">
                 <h4>${note.title}</h4>
                 <p>${note.content || 'No content'}</p>
-                <small>By Users #${note.userId}</small>  
+                <small>By Users #${note.userId}</small>
+                <button onclick = "deleteNote(${note.id})">Delete</button>
             </div>
             `;
     } 
 
     notesList.innerHTML = html;
+}
+async function deleteNote(id) {
+    if (!confirm('Delete this note?')) {
+        return;
+    }
+
+    await fetch(`${API_URL}/notes/${id}`, {
+        method: 'DELETE'
+    });
+
+    loadNotes();
 }
 
 document.getElementById('noteForm').addEventListener('submit', async (event) => {
