@@ -24,12 +24,15 @@
 
         <section>
             <h2>Notes</h2>
-            <form id="noteForm">
+            <form id="noteForm" enctype="multipart/form-data"> 
                 <select id="noteUserId" required>
                     <option value="">Select a user</option>
                 </select>
                 <input type="text" id="noteTitle" placeholder="Note Title" required>
                 <textarea id="noteContent" placeholder="Note content"></textarea>
+
+                <input type="file" id="noteImage" name="image" accept="image/">
+
                 <button type="submit">Add Note</button>
             </form>
             <div id="notesList">

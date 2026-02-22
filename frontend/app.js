@@ -83,11 +83,15 @@ async function loadNotes () {
     
     let html = "";
     for (const note of notes) {
+        const imageHtml = note.image ? `<img src = "${API_URL}/uploads/${note.image}" width = "100">`: '';
         html += `
             <div class = "note-item">
                 <h4>${note.title}</h4>
                 <p>${note.content || 'No content'}</p>
                 <small>By Users #${note.userId}</small>
+                <div class="note-image">
+                    ${imageHtml}
+                </div>
                 <button onclick = "deleteNote(${note.id})">Delete</button>
             </div>
             `;
@@ -95,6 +99,7 @@ async function loadNotes () {
 
     notesList.innerHTML = html;
 }
+
 async function deleteNote(id) {
     if (!confirm('Delete this note?')) {
         return;
@@ -110,24 +115,23 @@ async function deleteNote(id) {
 document.getElementById('noteForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const userId = document.getElementById('noteUserId').value;
-    const title = document.getElementById('noteTitle').value;
-    const content = document.getElementById('noteContent').value;
+    const formData = new FormData(); //sepcia for files
+    formData.append('userId', document.getElementById('noteUserId').value);
+    formData.append('title', document.getElementById('noteTitle').value);
+    formData.append('content', document.getElementById('noteContent').value);
+
+    const imageFile = document.getElementById('noteImage').files[0];
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
 
     await fetch(`${API_URL}/notes`, {
         method: 'POST',
-        headers: {
-            'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify({
-            userId: parseInt(userId),
-            title,
-            content
-        })
+        body: formData
     });
 
-    document.getElementById('noteTitle').value = '';
-    document.getElementById('noteContent').value = '';
+    document.getElementById('noteForm').request();
+
 
     loadNotes();
 })

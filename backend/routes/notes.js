@@ -1,9 +1,22 @@
-import { raw, Router } from "express";
+import { Router } from "express";
+import multer from "multer";
 
 import db from "../data/database.js";
 
  const router = Router();
 
+ const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+ });
+
+ const upload = multer({
+    storage: storage
+ });
 
 
  router.get('/', (req, res) => {
@@ -24,8 +37,10 @@ import db from "../data/database.js";
     res.json(note);
  });
 
-router.post('/', (req, res) => {
+router.post('/',upload.single('image'), (req, res) => {
     const {userId, title, content} = req.body;
+
+    const imagePath = req.file ? req.file.filename : null;
 
     if (!title || title === "") {
         return res.status(400).json({
@@ -40,7 +55,7 @@ router.post('/', (req, res) => {
         });
     }
 
-    const result = db.prepare('INSERT INTO notes (userID, title, content) VALUES(?,?,?)').run(userId, title, content || null);
+    const result = db.prepare('INSERT INTO notes (userID, title, content, image) VALUES(?,?,?,?)').run(userId, title, content || null, imagePath);
 
     const newNote = db.prepare('SELECT * FROM notes WHERE id = ?').get(result.lastInsertRowid);
 
