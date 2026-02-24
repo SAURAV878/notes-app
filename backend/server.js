@@ -4,8 +4,8 @@ import notesRouter from './routes/notes.js';
 import logger from './middleware/logger.js';
 
 const app = express();
-app.use(express.json());
-app.use(logger);
+app.use(express.json()); //prase JSON body
+app.use(logger); //log the request
 
 app.use(express.static('../frontend'));
 app.use('/uploads', express.static('uploads'));
@@ -16,7 +16,6 @@ app.use('/notes', notesRouter);
 
 app.listen(8000 , () => {
     
-    console.log('is runinf')
 });
 
 
